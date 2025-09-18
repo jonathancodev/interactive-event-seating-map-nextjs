@@ -31,7 +31,6 @@ export default function Home() {
     maxSeats,
   } = useSeatSelection();
 
-  // Load venue data
   useEffect(() => {
     const loadVenue = async () => {
       try {
@@ -51,14 +50,12 @@ export default function Home() {
     loadVenue();
   }, []);
 
-  // Update current seat details when focused seat changes
   useEffect(() => {
     if (!venue || !focusedSeat) {
       setCurrentSeat(null);
       return;
     }
 
-    // Find the focused seat in the venue data
     for (const section of venue.sections) {
       for (const row of section.rows) {
         const seat = row.seats.find(s => s.id === focusedSeat);
@@ -81,7 +78,6 @@ export default function Home() {
     setFocusedSeat(seatId);
   };
 
-  // Enable keyboard navigation
   useKeyboardNavigation({
     venue,
     focusedSeat,
@@ -148,7 +144,6 @@ export default function Home() {
         </header>
 
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-          {/* Main seating map */}
           <div className="xl:col-span-3 order-2 xl:order-1">
             <SeatingMap
               venue={venue}
@@ -159,9 +154,7 @@ export default function Home() {
             />
           </div>
 
-          {/* Sidebar with details and summary */}
           <div className="space-y-4 sm:space-y-6 order-1 xl:order-2">
-            {/* Mobile: Show selection summary first */}
             <div className="block xl:hidden">
               <SelectionSummary
                 selectedSeats={selectedSeats}
@@ -178,7 +171,6 @@ export default function Home() {
               isSelected={currentSeat ? isSelected(currentSeat.seat.id) ?? false : false}
             />
 
-            {/* Desktop: Show selection summary after details */}
             <div className="hidden xl:block">
               <SelectionSummary
                 selectedSeats={selectedSeats}

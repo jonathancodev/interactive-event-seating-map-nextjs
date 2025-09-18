@@ -26,18 +26,16 @@ export function useSeatSelection() {
     const isCurrentlySelected = isSelected(seat.id);
     
     if (isCurrentlySelected) {
-      // Remove seat
-      setSelectedSeats(prev => prev.filter(s => s.id !== seat.id));
+      setSelectedSeats(selectedSeats.filter(s => s.id !== seat.id));
       return true;
     } else if (canSelectMore) {
-      // Add seat
       const selectedSeat: SelectedSeat = {
         ...seat,
         sectionId,
         rowIndex,
         price: getPriceForTier(seat.priceTier),
       };
-      setSelectedSeats(prev => [...prev, selectedSeat]);
+      setSelectedSeats([...selectedSeats, selectedSeat]);
       return true;
     }
     

@@ -22,10 +22,8 @@ export function SeatingMap({
   const [panStart, setPanStart] = useState({ x: 0, y: 0 });
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
 
-  // Create a Set for faster lookup of selected seats
   const selectedSeatsSet = useMemo(() => new Set(selectedSeats), [selectedSeats]);
 
-  // Memoize seat rendering for performance with viewport culling
   const allSeats = useMemo(() => {
     const seats: React.ReactNode[] = [];
     let seatCount = 0;
@@ -33,9 +31,7 @@ export function SeatingMap({
     venue.sections.forEach((section) => {
       section.rows.forEach((row) => {
         row.seats.forEach((seat) => {
-          // Only render seats that are likely to be visible or interactive
-          // For very large venues, we could implement viewport culling here
-          if (seatCount < 20000) { // Reasonable limit for DOM performance
+          if (seatCount < 20000) {
             seats.push(
               <Seat
                 key={seat.id}
@@ -71,11 +67,6 @@ export function SeatingMap({
     setPanOffset({ x: 0, y: 0 });
   }, []);
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    // This is now handled by the SVG drag area
-  }, []);
-
-  // Use document-level events for better mouse tracking
   useEffect(() => {
     const handleDocumentMouseMove = (e: MouseEvent) => {
       if (isPanning) {
@@ -102,23 +93,9 @@ export function SeatingMap({
     };
   }, [isPanning, panStart]);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    // This is now handled by document event listener
-  }, []);
-
-  const handleMouseUp = useCallback(() => {
-    setIsPanning(false);
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    // Don't stop panning on mouse leave, let document handle it
-  }, []);
-
-  // Touch support for mobile
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (e.touches.length === 1) {
       const target = e.target as Element;
-      // Don't start panning if touching a seat
       if (target.tagName !== 'circle') {
         const touch = e.touches[0];
         setIsPanning(true);
@@ -149,7 +126,6 @@ export function SeatingMap({
         <div className="flex items-center justify-between w-full">
           <h2 className="text-lg font-semibold text-gray-900">{venue.name}</h2>
           
-          {/* Zoom Controls */}
           <div className="flex items-center gap-2">
             <button
               onClick={handleZoomOut}
@@ -178,14 +154,12 @@ export function SeatingMap({
           </div>
         </div>
         
-        {/* Navigation hint */}
         <div className="text-xs text-center mt-2">
           <span className={isPanning ? "text-blue-600 font-medium" : "text-gray-500"}>
             {isPanning ? "🔄 Panning..." : "💡 Click and drag to pan • Use zoom controls for better view"}
           </span>
         </div>
         
-        {/* Legend */}
         <div className="flex flex-wrap gap-4 text-sm">
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded-full bg-green-500"></div>
@@ -209,7 +183,6 @@ export function SeatingMap({
           </div>
         </div>
 
-        {/* SVG Map */}
         <div 
           className="w-full max-w-4xl border border-gray-300 rounded bg-white relative"
           style={{ 
@@ -237,7 +210,6 @@ export function SeatingMap({
               className="block"
               aria-label={`Seating map for ${venue.name}`}
             >
-              {/* Invisible drag area for panning - behind all content */}
               <rect
                 x={0}
                 y={0}
@@ -252,7 +224,6 @@ export function SeatingMap({
                 }}
               />
               
-              {/* Stage indicator - positioned at the top center */}
               <rect
                 x={venue.map.width * 0.25}
                 y={10}
@@ -271,10 +242,8 @@ export function SeatingMap({
                 STAGE
               </text>
             
-            {/* Render all seats */}
             {allSeats}
             
-            {/* Section labels - positioned below the stage */}
             {venue.sections.map((section) => (
               <text
                 key={`label-${section.id}`}

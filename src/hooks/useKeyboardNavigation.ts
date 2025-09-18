@@ -60,7 +60,6 @@ export function useKeyboardNavigation({
     
     switch (direction) {
       case 'left': {
-        // Find seat to the left in the same row
         const leftSeat = currentRow.seats.find(s => 
           s.col === currentSeat.col - 1 && s.status === 'available'
         );
@@ -70,7 +69,6 @@ export function useKeyboardNavigation({
         break;
       }
       case 'right': {
-        // Find seat to the right in the same row
         const rightSeat = currentRow.seats.find(s => 
           s.col === currentSeat.col + 1 && s.status === 'available'
         );
@@ -80,12 +78,11 @@ export function useKeyboardNavigation({
         break;
       }
       case 'up': {
-        // Find seat in the row above
         const upperRow = currentSection.rows.find(r => r.index === currentRow.index - 1);
         if (upperRow) {
           const upperSeat = upperRow.seats.find(s => 
             s.col === currentSeat.col && s.status === 'available'
-          ) || upperRow.seats.find(s => s.status === 'available'); // Fallback to any available seat in row
+          ) || upperRow.seats.find(s => s.status === 'available');
           if (upperSeat) {
             targetSeat = { seat: upperSeat, sectionId: currentSection.id, rowIndex: upperRow.index };
           }
@@ -93,12 +90,11 @@ export function useKeyboardNavigation({
         break;
       }
       case 'down': {
-        // Find seat in the row below
         const lowerRow = currentSection.rows.find(r => r.index === currentRow.index + 1);
         if (lowerRow) {
           const lowerSeat = lowerRow.seats.find(s => 
             s.col === currentSeat.col && s.status === 'available'
-          ) || lowerRow.seats.find(s => s.status === 'available'); // Fallback to any available seat in row
+          ) || lowerRow.seats.find(s => s.status === 'available');
           if (lowerSeat) {
             targetSeat = { seat: lowerSeat, sectionId: currentSection.id, rowIndex: lowerRow.index };
           }
@@ -114,7 +110,6 @@ export function useKeyboardNavigation({
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!venue) return;
       
-      // Only handle navigation when no input is focused
       if (event.target instanceof HTMLInputElement || 
           event.target instanceof HTMLTextAreaElement ||
           event.target instanceof HTMLSelectElement) {
@@ -129,7 +124,6 @@ export function useKeyboardNavigation({
           event.preventDefault();
           
           if (!focusedSeat) {
-            // Focus on first available seat if none is focused
             const availableSeats = getAvailableSeats();
             if (availableSeats.length > 0) {
               onSeatFocus(availableSeats[0].seat.id);
